@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:test/screens/home.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:test/screens/widgets/input_field.dart';
+import '../controllers/task_controller.dart';
+
+import '../models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -15,6 +18,9 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.put(TaskController());
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _endTime =
       DateFormat("hh:mm a").format(DateTime.now().add(Duration(minutes: 30)));
@@ -92,8 +98,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
               "Add Task",
               style: HeadingStyle,
             ),
-            MyInputField(title: "Title", hint: "Enter Your Title"),
-            MyInputField(title: "Note", hint: "Enter Your Note"),
+            MyInputField(
+              title: "Title",
+              hint: "Enter Your Title",
+              controller: _titleController,
+            ),
+            MyInputField(
+              title: "Note",
+              hint: "Enter Your Note",
+              controller: _noteController,
+            ),
             MyInputField(
                 title: "Date",
                 hint: DateFormat.yMd().format(_selectedDate),
@@ -202,12 +216,40 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     ),
                   )
                 ]),
-                MyButton(label: "Create Task", onTap: () => null)
+                MyButton(label: "Create Task", onTap: () => validateDate())
               ],
             )
           ],
         )),
       ),
     );
+  }
+
+  validateDate() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      addTaskToDB();
+      Get.back();
+    } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
+      Get.snackbar("Required", "Please fill all the fields",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Color.fromARGB(255, 246, 222, 221),
+          icon: Icon(Icons.warning_amber_rounded));
+    }
+  }
+
+  addTaskToDB() async {
+    int value = await _taskController.addTask(
+        task: Task(
+      title: _titleController.text,
+      note: _noteController.text,
+      date: DateFormat.yMd().format(_selectedDate),
+      startTime: _startTime,
+      endTime: _endTime,
+      remind: _selectedRemind,
+      repeat: _selectedRepeat,
+      Color: 1,
+      isCompleted: 0,
+    ));
+    print("My id is $value");
   }
 }
