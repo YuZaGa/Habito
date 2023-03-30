@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:test/screens/add_taskbar.dart';
+import 'package:test/screens/task_editor.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -164,9 +165,18 @@ _showTask() {
                   endActionPane: ActionPane(
                     motion: const StretchMotion(),
                     children: [
-                      // settings option
+                      // EDIT Option
                       SlidableAction(
-                        onPressed: null,
+                        onPressed: (BuildContext context) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditTaskScreen(
+                                      task,
+                                      taskId: task.key,
+                                    )),
+                          );
+                        },
                         backgroundColor: Colors.grey.shade800,
                         icon: Icons.edit,
                         borderRadius: BorderRadius.circular(12),
