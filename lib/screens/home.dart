@@ -109,10 +109,10 @@ _addDateBar() {
       height: 100,
       width: 80,
       initialSelectedDate: DateTime.now(),
-      selectionColor: Color(0xFF4e5ae8),
-      selectedTextColor: Colors.white,
+      selectionColor: Color(0xFFFBEBCC),
+      selectedTextColor: Colors.black,
       dateTextStyle: TextStyle(
-          fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey),
+          fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
       onDateChange: (date) {
         _selectedDate = date;
       },

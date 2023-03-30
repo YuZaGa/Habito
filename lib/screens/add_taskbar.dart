@@ -197,30 +197,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
               height: 8.0,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    "Color",
-                    style: subHeadingStyle,
-                  ),
-                  Wrap(
-                    children: List<Widget>.generate(
-                      3,
-                      (int index) {
-                        return Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                              radius: 14, backgroundColor: Colors.grey),
-                        );
-                      },
-                    ),
-                  )
-                ]),
                 MyButton(label: "Create Task", onTap: () => validateDate())
               ],
-            )
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
           ],
         )),
       ),
@@ -253,6 +237,5 @@ class _AddTaskPageState extends State<AddTaskPage> {
         isCompleted: false,
       ),
     );
-    print("My id is $value");
   }
 }
