@@ -41,6 +41,7 @@ class MyInputField extends StatelessWidget {
                   cursorColor: Colors.grey,
                   controller: controller,
                   decoration: InputDecoration(
+                    border: InputBorder.none,
                     hintText: hint,
                     focusedBorder: InputBorder.none,
                   ),
