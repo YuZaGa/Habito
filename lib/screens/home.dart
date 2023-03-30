@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:test/screens/add_taskbar.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../models/task.dart';
 
@@ -20,34 +21,76 @@ class Dashboard extends StatelessWidget {
         children: [
           _addTaskbar(),
           _addDateBar(),
-          Expanded(
-            child: ValueListenableBuilder(
-              valueListenable: Hive.box<Task>('tasks').listenable(),
-              builder: (context, Box<Task> box, _) {
-                List<Task> tasks = box.values.toList();
-                return ListView.builder(
-                  itemCount: tasks.length,
-                  itemBuilder: (context, index) {
-                    Task task = tasks[index];
-                    return ListTile(
-                      title: Text(task.title),
-                      subtitle: Text(task.note),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          box.delete(task.key);
-                        },
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          _showTask(),
         ],
       ),
     );
   }
+}
+
+_showTask() {
+  return Expanded(
+    child: ValueListenableBuilder(
+      valueListenable: Hive.box<Task>('tasks').listenable(),
+      builder: (context, Box<Task> box, _) {
+        List<Task> tasks = box.values.toList();
+        return ListView.builder(
+          //padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            Task task = tasks[index];
+            return Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: Color(0xFFDDEDEC),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFFBEBCC),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              margin: const EdgeInsets.only(
+                  top: 15, left: 13, right: 13, bottom: 0),
+              padding: const EdgeInsets.only(right: 10),
+              child: Slidable(
+                endActionPane: ActionPane(
+                  motion: const StretchMotion(),
+                  children: [
+                    // settings option
+                    SlidableAction(
+                      onPressed: null,
+                      backgroundColor: Colors.grey.shade800,
+                      icon: Icons.edit,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    SizedBox(width: 5),
+
+                    // delete option
+                    SlidableAction(
+                      onPressed: (BuildContext context) {
+                        box.delete(task.key);
+                      },
+                      backgroundColor: Colors.red.shade400,
+                      icon: Icons.delete,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Text(task.title),
+                  subtitle: Text(task.note),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ),
+  );
 }
 
 _appBar() {
