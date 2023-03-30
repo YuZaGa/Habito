@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:test/screens/home.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:test/screens/widgets/input_field.dart';
 import '../controllers/task_controller.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
 import '../db/db_helper.dart';
 import '../models/task.dart';
+import 'package:hive/hive.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -97,7 +94,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Add Task",
+              "Add Habit",
               style: HeadingStyle,
             ),
             MyInputField(
@@ -112,7 +109,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ),
             MyInputField(
                 title: "Date",
-                hint: DateFormat.yMd().format(_selectedDate),
+                hint: DateFormat('dd/MM/yyyy').format(_selectedDate),
                 widget: IconButton(
                     onPressed: () => _getDateFromUser(context),
                     icon: Icon(Icons.calendar_today_outlined))),
