@@ -7,7 +7,9 @@ import 'package:test/screens/home.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:test/screens/widgets/input_field.dart';
 import '../controllers/task_controller.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../db/db_helper.dart';
 import '../models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -238,18 +240,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   addTaskToDB() async {
-    int value = await _taskController.addTask(
-        task: Task(
-      title: _titleController.text,
-      note: _noteController.text,
-      date: DateFormat.yMd().format(_selectedDate),
-      startTime: _startTime,
-      endTime: _endTime,
-      remind: _selectedRemind,
-      repeat: _selectedRepeat,
-      Color: 1,
-      isCompleted: 0,
-    ));
+    int value = await HiveHelper.insert(
+      Task(
+        title: _titleController.text,
+        note: _noteController.text,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        remind: _selectedRemind,
+        repeat: _selectedRepeat,
+        color: 1,
+        isCompleted: false,
+      ),
+    );
     print("My id is $value");
   }
 }

@@ -1,10 +1,13 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:test/screens/add_taskbar.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
+
+import '../models/task.dart';
 
 DateTime _selectedDate = DateTime.now();
 
@@ -17,6 +20,30 @@ class Dashboard extends StatelessWidget {
         children: [
           _addTaskbar(),
           _addDateBar(),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: Hive.box<Task>('tasks').listenable(),
+              builder: (context, Box<Task> box, _) {
+                List<Task> tasks = box.values.toList();
+                return ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    Task task = tasks[index];
+                    return ListTile(
+                      title: Text(task.title),
+                      subtitle: Text(task.note),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          box.delete(task.key);
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

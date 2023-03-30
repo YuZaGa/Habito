@@ -1,29 +1,27 @@
-import 'package:sqflite/sqflite.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 import '../models/task.dart';
 
-class DBHelper {
-  static Database? _db;
-  static final int _version = 1;
-  static final String _tableName = 'tasks';
+class HiveHelper {
+  static Future<Box<Task>> _getBox() async {
+    final appDocumentDir =
+        await path_provider.getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDir.path);
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(TaskAdapter());
+    }
 
-  static Future<Database?> initDB() async {
-    if (_db != null) {
-      return _db;
-    }
-    try {
-      String _path = await getDatabasesPath() + 'tasks.db';
-      _db = await openDatabase(_path, version: _version,
-          onCreate: ((db, version) {
-        return db.execute(
-            "CREATE TABLE $_tableName (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, note TEXT, isCompleted INTEGER, date TEXT, startTime TEXT, endTime TEXT, Color INTEGER, remind INTEGER, repeat TEXT)");
-      }));
-    } catch (e) {
-      print(e);
-    }
+    return await Hive.openBox<Task>('tasks');
   }
 
-  static Future<int> insert(Task? task) async {
-    return await _db?.insert(_tableName, task!.toJson()) ?? 1;
+  static Future<int> insert(Task task) async {
+    final box = await _getBox();
+    return await box.add(task);
+  }
+
+  static Future<List<Task>> getAllTasks() async {
+    final box = await _getBox();
+    return box.values.toList();
   }
 }
