@@ -35,7 +35,6 @@ _showTask() {
       builder: (context, Box<Task> box, _) {
         List<Task> tasks = box.values.toList();
         return ListView.builder(
-          //padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             Task task = tasks[index];
