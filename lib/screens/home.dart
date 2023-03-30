@@ -16,9 +16,14 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(),
       body: Column(
         children: [
+          _appBar(),
+          Divider(
+            indent: 20,
+            endIndent: 20,
+            thickness: 3,
+          ),
           _addTaskbar(),
           _addDateBar(),
           _showTask(),
@@ -26,6 +31,104 @@ class Dashboard extends StatelessWidget {
       ),
     );
   }
+}
+
+_appBar() {
+  return Container(
+    padding: const EdgeInsets.only(top: 10, left: 20, right: 15),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${getGreeting()},',
+                style: GoogleFonts.lato(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey),
+              ),
+              SizedBox(height: 2),
+              Text(
+                'Yumn Gauhar',
+                style: GoogleFonts.lato(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            //Get.to(AddTaskPage());
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+String getGreeting() {
+  var now = DateTime.now();
+  var hour = now.hour;
+
+  if (hour >= 5 && hour < 12) {
+    return 'morning';
+  } else if (hour >= 12 && hour < 17) {
+    return 'afternoon';
+  } else if (hour >= 17 && hour < 21) {
+    return 'evening';
+  } else {
+    return 'hey';
+  }
+}
+
+_addTaskbar() {
+  return Container(
+    margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              DateFormat.yMMMMd().format(DateTime.now()),
+              style: subHeadingStyle,
+            ),
+            Text("Today", style: HeadingStyle)
+          ]),
+        ),
+        MyButton(
+          label: "+ Add Task",
+          onTap: () => Get.toNamed('/add-task'),
+        )
+      ],
+    ),
+  );
+}
+
+_addDateBar() {
+  return Container(
+    margin: const EdgeInsets.only(top: 15, left: 15),
+    child: DatePicker(
+      DateTime.now(),
+      height: 100,
+      width: 80,
+      initialSelectedDate: DateTime.now(),
+      selectionColor: Color(0xFFFBEBCC),
+      selectedTextColor: Colors.black,
+      dateTextStyle: TextStyle(
+          fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
+      onDateChange: (date) {
+        _selectedDate = date;
+      },
+    ),
+  );
 }
 
 _showTask() {
@@ -39,7 +142,7 @@ _showTask() {
           itemBuilder: (context, index) {
             Task task = tasks[index];
             return Container(
-              height: 100,
+              height: 150,
               decoration: BoxDecoration(
                 color: Color(0xFFDDEDEC),
                 borderRadius: BorderRadius.circular(12),
@@ -53,7 +156,7 @@ _showTask() {
                 ],
               ),
               margin: const EdgeInsets.only(
-                  top: 15, left: 13, right: 13, bottom: 0),
+                  top: 15, left: 18, right: 18, bottom: 0),
               padding: const EdgeInsets.only(right: 10),
               child: Slidable(
                 endActionPane: ActionPane(
@@ -88,58 +191,6 @@ _showTask() {
           },
         );
       },
-    ),
-  );
-}
-
-_appBar() {
-  return AppBar(
-    elevation: 0,
-    title: Text('Dashboard'.toUpperCase()),
-    backgroundColor: Colors.white,
-  );
-}
-
-_addDateBar() {
-  return Container(
-    margin: const EdgeInsets.only(top: 15, left: 15),
-    child: DatePicker(
-      DateTime.now(),
-      height: 100,
-      width: 80,
-      initialSelectedDate: DateTime.now(),
-      selectionColor: Color(0xFFFBEBCC),
-      selectedTextColor: Colors.black,
-      dateTextStyle: TextStyle(
-          fontSize: 20, fontWeight: FontWeight.w600, color: Colors.black),
-      onDateChange: (date) {
-        _selectedDate = date;
-      },
-    ),
-  );
-}
-
-_addTaskbar() {
-  return Container(
-    margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              DateFormat.yMMMMd().format(DateTime.now()),
-              style: subHeadingStyle,
-            ),
-            Text("Today", style: HeadingStyle)
-          ]),
-        ),
-        MyButton(
-          label: "+ Add Task",
-          onTap: () => Get.toNamed('/add-task'),
-        )
-      ],
     ),
   );
 }
