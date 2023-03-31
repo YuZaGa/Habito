@@ -158,11 +158,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Edit Task",
+                    "Edit Habit",
                     style: HeadingStyle,
                   ),
                   Checkbox(
                       value: _completed,
+                      activeColor: Colors.black,
                       onChanged: (value) {
                         setState(() {
                           _completed = value!;
