@@ -10,6 +10,10 @@ class TaskController extends GetxController {
   }
 
   Future<int> addTask({Task? task}) async {
-    return await DBHelper.insert(task);
+    return await HiveHelper.insert(task!);
+  }
+
+  Future<List<Task>> getTasks() async {
+    return await HiveHelper.getAllTasks();
   }
 }

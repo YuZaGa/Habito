@@ -3,13 +3,18 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:test/screens/add_taskbar.dart';
 import 'package:test/screens/home.dart';
 import 'package:get/get.dart';
-import 'package:test/db/db_helper.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'models/task.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DBHelper.initDB();
-  await GetStorage.init();
+  await Hive.initFlutter();
+  if (!Hive.isAdapterRegistered(1)) {
+    Hive.registerAdapter(TaskAdapter());
+  }
+
+  await Hive.openBox<Task>('tasks');
   runApp(MyApp());
 }
 

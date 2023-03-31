@@ -1,59 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:test/screens/home.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:test/screens/widgets/input_field.dart';
-import '../controllers/task_controller.dart';
 import '../db/db_helper.dart';
 import '../models/task.dart';
-import 'package:hive/hive.dart';
+import 'package:get/get.dart';
 
-class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+class EditTaskScreen extends StatefulWidget {
+  final int taskId;
+
+  EditTaskScreen(Task task, {required this.taskId});
 
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  _EditTaskScreenState createState() => _EditTaskScreenState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
-  final TaskController _taskController = Get.put(TaskController());
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  String _endTime =
-      DateFormat("hh:mm a").format(DateTime.now().add(Duration(minutes: 30)));
-  String _startTime = DateFormat("hh:mm a").format(DateTime.now());
-  int _selectedRemind = 5;
+class _EditTaskScreenState extends State<EditTaskScreen> {
+  late TextEditingController _titleController;
+  late TextEditingController _noteController;
+  late bool _completed;
+  late String _endTime;
+  late String _startTime;
+  late String _selectedDate;
+  late int _selectedRemind;
+  late String _selectedRepeat;
   List<int> remindList = [5, 10, 15, 20, 30];
-  String _selectedRepeat = "None";
   List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
-  _appBar() {
-    return Container(
-      padding: const EdgeInsets.only(top: 10),
-      margin: EdgeInsets.only(bottom: 10),
-      child: Row(
-        //mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () => Get.toNamed('/'),
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 20,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+  }
+
+  void _initData() async {
+    final taskBox = Hive.box<Task>('tasks');
+    final task = taskBox.get(widget.taskId);
+
+    if (task != null) {
+      _titleController = TextEditingController(text: task.title);
+      _noteController = TextEditingController(text: task.note);
+      _selectedDate = task.date;
+      _startTime = task.startTime;
+      _endTime = task.endTime;
+      _completed = task.isCompleted;
+      _selectedRemind = task.remind;
+      _selectedRepeat = task.repeat;
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  void _saveChanges() {
+    final taskBox = Hive.box<Task>('tasks');
+    final task = taskBox.get(widget.taskId);
+
+    if (task != null) {
+      task.title = _titleController.text;
+      task.note = _noteController.text;
+      task.isCompleted = _completed;
+      task.date = _selectedDate;
+      task.startTime = _startTime;
+      task.endTime = _endTime;
+      task.isCompleted = _completed;
+      task.remind = _selectedRemind;
+      task.repeat = _selectedRepeat;
+
+      task.save();
+      Navigator.pop(context);
+    }
   }
 
   _getDateFromUser(context) async {
@@ -65,7 +87,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     if (_pickerDate != null) {
       setState(() {
-        _selectedDate = _pickerDate;
+        _selectedDate = DateFormat('dd/MM/yyyy').format(_pickerDate);
       });
     } else {}
   }
@@ -94,6 +116,33 @@ class _AddTaskPageState extends State<AddTaskPage> {
             minute: int.parse(_startTime.split(":")[1].split(" ")[0])));
   }
 
+  _appBar() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(bottom: 10),
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => Get.toNamed('/'),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,9 +154,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _appBar(),
-              Text(
-                "Add Habit",
-                style: HeadingStyle,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Edit Habit",
+                    style: HeadingStyle,
+                  ),
+                  Checkbox(
+                      value: _completed,
+                      activeColor: Colors.black,
+                      onChanged: (value) {
+                        setState(() {
+                          _completed = value!;
+                        });
+                      })
+                ],
               ),
               MyInputField(
                 title: "Title",
@@ -121,7 +183,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               MyInputField(
                   title: "Date",
-                  hint: DateFormat('dd/MM/yyyy').format(_selectedDate),
+                  hint: _selectedDate,
                   widget: IconButton(
                       onPressed: () => _getDateFromUser(context),
                       icon: Icon(Icons.calendar_today_outlined))),
@@ -209,7 +271,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  MyButton(label: "Create Task", onTap: () => validateDate())
+                  MyButton(label: "Save Changes", onTap: () => _saveChanges()),
                 ],
               ),
               SizedBox(
@@ -224,7 +286,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   validateDate() {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
-      addTaskToDB();
+      _saveChanges();
       Get.back();
     } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
       Get.snackbar("Required", "Please fill all the fields",
@@ -232,21 +294,5 @@ class _AddTaskPageState extends State<AddTaskPage> {
           backgroundColor: Color.fromARGB(255, 246, 222, 221),
           icon: Icon(Icons.warning_amber_rounded));
     }
-  }
-
-  addTaskToDB() async {
-    int value = await HiveHelper.insert(
-      Task(
-        title: _titleController.text,
-        note: _noteController.text,
-        date: DateFormat('dd/MM/yyyy').format(_selectedDate),
-        startTime: _startTime,
-        endTime: _endTime,
-        remind: _selectedRemind,
-        repeat: _selectedRepeat,
-        color: 1,
-        isCompleted: false,
-      ),
-    );
   }
 }
