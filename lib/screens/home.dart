@@ -362,7 +362,7 @@ _showTask() {
                                     )
                                   ],
                                 ),
-                                Column(
+                                /*Column(
                                   children: [
                                     Column(
                                       children: [
@@ -376,7 +376,8 @@ _showTask() {
                                         Row(
                                           children: [
                                             Text(
-                                              "10 days",
+                                              task.streakCount.toString() +
+                                                  " days",
                                               style: GoogleFonts.lato(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w600,
@@ -387,7 +388,7 @@ _showTask() {
                                       ],
                                     )
                                   ],
-                                ),
+                                ),*/
                               ],
                             )
                           ],
@@ -535,7 +536,7 @@ _showTask() {
                                     )
                                   ],
                                 ),
-                                Column(
+                                /*Column(
                                   children: [
                                     Column(
                                       children: [
@@ -549,7 +550,8 @@ _showTask() {
                                         Row(
                                           children: [
                                             Text(
-                                              "10 days",
+                                              task.streakCount.toString() +
+                                                  " days",
                                               style: GoogleFonts.lato(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w600,
@@ -560,7 +562,7 @@ _showTask() {
                                       ],
                                     )
                                   ],
-                                ),
+                                ),*/
                               ],
                             )
                           ],

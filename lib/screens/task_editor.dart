@@ -171,6 +171,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         setState(() {
                           if (_completed == false) {
                             _completed = value!;
+                            //Task.updateStreakCount(_completedDates);
                             _completedDates.add(DateFormat('yyyy-MM-dd')
                                 .format(DateTime.now())
                                 .toString());
