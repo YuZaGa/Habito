@@ -177,6 +177,7 @@ _showTask() {
                       SlidableAction(
                         onPressed: (BuildContext context) {
                           task.isCompleted = true;
+                          box.putAt(index, task);
                         },
                         backgroundColor: Colors.green.shade800,
                         icon: Icons.check,
@@ -340,6 +341,7 @@ _showTask() {
                       SlidableAction(
                         onPressed: (BuildContext context) {
                           task.isCompleted = true;
+                          box.putAt(index, task);
                         },
                         backgroundColor: Colors.green.shade800,
                         icon: Icons.check,
