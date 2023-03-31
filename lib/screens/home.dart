@@ -143,6 +143,74 @@ _addTaskbar() {
   );
 }
 
+void _showDeleteConfirmationDialog(
+  BuildContext context,
+  Box<Task> box,
+  Task task,
+) {
+  showModalBottomSheet(
+    backgroundColor: Color(0xFFFBEBCC),
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Are you sure you want to delete this habit?',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(95, 45)),
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    elevation: MaterialStateProperty.all(4),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    box.delete(task.key);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Delete',
+                  ),
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(95, 45)),
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    elevation: MaterialStateProperty.all(4),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 _showTask() {
   return Expanded(
     child: ValueListenableBuilder(
@@ -386,7 +454,7 @@ _showTask() {
                         // delete option
                         SlidableAction(
                           onPressed: (BuildContext context) {
-                            box.delete(task.key);
+                            _showDeleteConfirmationDialog(context, box, task);
                           },
                           backgroundColor: Colors.red.shade400,
                           icon: Icons.delete,
