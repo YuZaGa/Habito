@@ -14,6 +14,8 @@ import '../models/task.dart';
 DateTime _selectedDate = DateTime.now();
 final today = DateTime.now();
 final formattedToday = DateFormat('yyyy-MM-dd').format(_selectedDate);
+final box = Hive.box('user_data');
+final name = box.get('name');
 
 class Dashboard extends StatefulWidget {
   @override
@@ -83,7 +85,7 @@ _appBar() {
               ),
               SizedBox(height: 2),
               Text(
-                'Yumn Gauhar',
+                '$name',
                 style: GoogleFonts.lato(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
