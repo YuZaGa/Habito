@@ -29,18 +29,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
   String _selectedRepeat = "None";
   List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
-  _appBar(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      title: Text('Dashboard'.toUpperCase()),
-      backgroundColor: Colors.white,
-      leading: GestureDetector(
-        onTap: () => Get.toNamed('/'),
-        child: Icon(
-          Icons.arrow_back_ios,
-          size: 20,
-          color: Colors.black,
-        ),
+  _appBar() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(bottom: 10),
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => Get.toNamed('/'),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -86,124 +97,127 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(context),
-      body: Container(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Add Habit",
-              style: HeadingStyle,
-            ),
-            MyInputField(
-              title: "Title",
-              hint: "Enter Your Title",
-              controller: _titleController,
-            ),
-            MyInputField(
-              title: "Note",
-              hint: "Enter Your Note",
-              controller: _noteController,
-            ),
-            MyInputField(
-                title: "Date",
-                hint: DateFormat('dd/MM/yyyy').format(_selectedDate),
-                widget: IconButton(
-                    onPressed: () => _getDateFromUser(context),
-                    icon: Icon(Icons.calendar_today_outlined))),
-            Row(
-              children: [
-                Expanded(
-                  child: MyInputField(
-                    title: "Start Time",
-                    hint: _startTime,
-                    widget: IconButton(
-                        onPressed: () => _getTimeFromUser(isStartTime: true),
-                        icon: Icon(Icons.access_time_rounded)),
-                  ),
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: MyInputField(
-                    title: "End Time",
-                    hint: _endTime,
-                    widget: IconButton(
-                        onPressed: () => _getTimeFromUser(isStartTime: false),
-                        icon: Icon(Icons.access_time_rounded)),
-                  ),
-                )
-              ],
-            ),
-            MyInputField(
-              title: "Remind",
-              hint: "$_selectedRemind minutes early",
-              widget: DropdownButton(
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.grey,
-                ),
-                iconSize: 32,
-                elevation: 4,
-                items: remindList.map<DropdownMenuItem<String>>((int value) {
-                  return DropdownMenuItem<String>(
-                    child: Text(value.toString()),
-                    value: value.toString(),
-                  );
-                }).toList(),
-                underline: Container(
-                  height: 0,
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedRemind = int.parse(value!);
-                  });
-                },
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: SingleChildScrollView(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _appBar(),
+              Text(
+                "Add Habit",
+                style: HeadingStyle,
               ),
-            ),
-            MyInputField(
-              title: "Repeat",
-              hint: _selectedRepeat,
-              widget: DropdownButton(
-                icon: Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.grey,
-                ),
-                iconSize: 32,
-                elevation: 4,
-                items: repeatList.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    child: Text(value.toString()),
-                    value: value.toString(),
-                  );
-                }).toList(),
-                underline: Container(
-                  height: 0,
-                ),
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedRepeat = value!;
-                  });
-                },
+              MyInputField(
+                title: "Title",
+                hint: "Enter Your Title",
+                controller: _titleController,
               ),
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyButton(label: "Create Task", onTap: () => validateDate())
-              ],
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-          ],
-        )),
+              MyInputField(
+                title: "Note",
+                hint: "Enter Your Note",
+                controller: _noteController,
+              ),
+              MyInputField(
+                  title: "Date",
+                  hint: DateFormat('dd/MM/yyyy').format(_selectedDate),
+                  widget: IconButton(
+                      onPressed: () => _getDateFromUser(context),
+                      icon: Icon(Icons.calendar_today_outlined))),
+              Row(
+                children: [
+                  Expanded(
+                    child: MyInputField(
+                      title: "Start Time",
+                      hint: _startTime,
+                      widget: IconButton(
+                          onPressed: () => _getTimeFromUser(isStartTime: true),
+                          icon: Icon(Icons.access_time_rounded)),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Expanded(
+                    child: MyInputField(
+                      title: "End Time",
+                      hint: _endTime,
+                      widget: IconButton(
+                          onPressed: () => _getTimeFromUser(isStartTime: false),
+                          icon: Icon(Icons.access_time_rounded)),
+                    ),
+                  )
+                ],
+              ),
+              MyInputField(
+                title: "Remind",
+                hint: "$_selectedRemind minutes early",
+                widget: DropdownButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                  iconSize: 32,
+                  elevation: 4,
+                  items: remindList.map<DropdownMenuItem<String>>((int value) {
+                    return DropdownMenuItem<String>(
+                      child: Text(value.toString()),
+                      value: value.toString(),
+                    );
+                  }).toList(),
+                  underline: Container(
+                    height: 0,
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedRemind = int.parse(value!);
+                    });
+                  },
+                ),
+              ),
+              MyInputField(
+                title: "Repeat",
+                hint: _selectedRepeat,
+                widget: DropdownButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                  iconSize: 32,
+                  elevation: 4,
+                  items:
+                      repeatList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      child: Text(value.toString()),
+                      value: value.toString(),
+                    );
+                  }).toList(),
+                  underline: Container(
+                    height: 0,
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedRepeat = value!;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MyButton(label: "Create Task", onTap: () => validateDate())
+                ],
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+            ],
+          )),
+        ),
       ),
     );
   }
@@ -225,7 +239,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       Task(
         title: _titleController.text,
         note: _noteController.text,
-        date: DateFormat.yMd().format(_selectedDate),
+        date: DateFormat('dd/MM/yyyy').format(_selectedDate),
         startTime: _startTime,
         endTime: _endTime,
         remind: _selectedRemind,
