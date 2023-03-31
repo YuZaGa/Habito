@@ -8,7 +8,7 @@ import 'package:test/screens/task_editor.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:test/screens/onboarding.dart';
 import '../models/task.dart';
 
 DateTime _selectedDate = DateTime.now();
@@ -95,7 +95,7 @@ _appBar() {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            //Get.to(AddTaskPage());
+            Get.toNamed('/settings');
           },
         ),
       ],

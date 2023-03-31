@@ -4,6 +4,8 @@ import 'package:test/screens/add_taskbar.dart';
 import 'package:test/screens/home.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:test/screens/onboarding.dart';
+import 'package:test/screens/settings.dart';
 
 import 'models/task.dart';
 
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => Dashboard()),
         GetPage(name: '/add-task', page: () => AddTaskPage()),
+        GetPage(name: '/onboarding', page: () => OnboardingScreen()),
+        GetPage(name: '/settings', page: () => SettingsScreen()),
       ],
     );
   }
