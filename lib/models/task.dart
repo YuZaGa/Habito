@@ -34,6 +34,9 @@ class Task extends HiveObject {
   @HiveField(9)
   late String repeat;
 
+  @HiveField(10)
+  late List<String> completedDates = [];
+
   Task({
     this.id,
     required this.title,
@@ -72,4 +75,13 @@ class Task extends HiveObject {
         'remind': remind,
         'repeat': repeat,
       };
+}
+
+@HiveType(typeId: 2)
+class CompletedDate extends HiveObject {
+  @HiveField(0)
+  late int taskId;
+
+  @HiveField(1)
+  late String date;
 }

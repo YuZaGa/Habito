@@ -12,6 +12,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/task.dart';
 
 DateTime _selectedDate = DateTime.now();
+final today = DateTime.now();
+final formattedToday = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
 class Dashboard extends StatefulWidget {
   @override
@@ -177,6 +179,10 @@ _showTask() {
                       SlidableAction(
                         onPressed: (BuildContext context) {
                           task.isCompleted = true;
+                          task.completedDates.add(DateFormat('yyyy-MM-dd')
+                              .format(DateTime.now())
+                              .toString());
+                          box.putAt(index, task);
                         },
                         backgroundColor: Colors.green.shade800,
                         icon: Icons.check,
@@ -226,7 +232,10 @@ _showTask() {
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
-                                decoration: task.isCompleted
+                                decoration: task.isCompleted &&
+                                        task.completedDates.contains(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_selectedDate))
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                               ),
@@ -240,7 +249,10 @@ _showTask() {
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.grey,
-                                decoration: task.isCompleted
+                                decoration: task.isCompleted &&
+                                        task.completedDates.contains(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_selectedDate))
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                               ),
@@ -340,6 +352,10 @@ _showTask() {
                       SlidableAction(
                         onPressed: (BuildContext context) {
                           task.isCompleted = true;
+                          task.completedDates.add(DateFormat('yyyy-MM-dd')
+                              .format(DateTime.now())
+                              .toString());
+                          box.putAt(index, task);
                         },
                         backgroundColor: Colors.green.shade800,
                         icon: Icons.check,
@@ -389,7 +405,10 @@ _showTask() {
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
-                                decoration: task.isCompleted
+                                decoration: task.isCompleted &&
+                                        task.completedDates.contains(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_selectedDate))
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                               ),
@@ -403,7 +422,10 @@ _showTask() {
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.grey,
-                                decoration: task.isCompleted
+                                decoration: task.isCompleted &&
+                                        task.completedDates.contains(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(_selectedDate))
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                               ),
