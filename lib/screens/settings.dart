@@ -8,8 +8,15 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  late final TextEditingController _nameController;
+  late String _name = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _getNameFromDatabase();
+  }
 
   @override
   void dispose() {
@@ -17,22 +24,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
-  String _name = '';
-
-  Future<void> _getName() async {
+  Future<void> _getNameFromDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
     final box = await Hive.openBox('user_data');
-    final name = box.get('name');
     setState(() {
-      _name = name ?? '';
+      _name = box.get('name', defaultValue: '') as String;
+      _nameController.text = _name;
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getName();
+  Future<void> _updateNameInDatabase(String newName) async {
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDir.path);
+    final box = await Hive.openBox('user_data');
+    await box.put('name', newName);
+  }
+
+  Future<void> _showSaveDialog(BuildContext context) async {
+    final formKey = GlobalKey<FormState>();
+    String newName = _name;
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Save Changes'),
+          content: Form(
+            key: formKey,
+            child: TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                newName = value;
+              },
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  _updateNameInDatabase(newName);
+                  setState(() {
+                    _name = newName;
+                  });
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -41,48 +98,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text('Settings'),
       ),
-      body: Form(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                initialValue: _name,
-                decoration: InputDecoration(
-                  labelText: 'Name',
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Name',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _name,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _name = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (Form.of(context)!.validate()) {
-                    final appDocumentDir =
-                        getApplicationDocumentsDirectory().then((value) {
-                      Hive.init(value.path);
-                      final box = Hive.openBox('user_data');
-                      box.then((value) {
-                        value.put('name', _name);
-                        Navigator.pushNamed(context, '/home');
-                      });
-                    });
-                  }
-                },
-                child: Text('Save'),
-              ),
-            ],
-          ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    _showSaveDialog(context);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:test/screens/settings.dart';
 
 import 'models/task.dart';
 
+bool onboardingShown = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -16,6 +17,9 @@ Future<void> main() async {
     Hive.registerAdapter(TaskAdapter());
   }
 
+  await Hive.openBox(HiveBoxes.userBox);
+  Box box = Hive.box(HiveBoxes.userBox);
+  onboardingShown = box.get('onboardingShown') ?? false;
   await Hive.openBox<Task>('tasks');
   runApp(MyApp());
 }
@@ -27,7 +31,7 @@ class MyApp extends StatelessWidget {
       title: 'FirstApp',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
-      initialRoute: '/',
+      home: onboardingShown ? Dashboard() : OnboardingScreen(),
       getPages: [
         GetPage(name: '/', page: () => Dashboard()),
         GetPage(name: '/add-task', page: () => AddTaskPage()),
