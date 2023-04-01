@@ -14,7 +14,8 @@ final today = DateTime.now();
 final formattedToday = DateFormat('yyyy-MM-dd').format(_selectedDate);
 final box = Hive.box('user_data');
 final name = box.get('name');
-final isSortable = box.get('isSubscribed');
+bool isSortable =
+    box.get('isSubscribed') == null ? false : box.get('isSubscribed');
 
 class Dashboard extends StatefulWidget {
   @override
@@ -234,6 +235,8 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 Text(
                   task.title.toLowerCase(),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: GoogleFonts.lato(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
