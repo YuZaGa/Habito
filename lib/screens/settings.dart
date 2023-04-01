@@ -13,6 +13,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late final TextEditingController _nameController;
   late String _name = '';
+  bool _isSubscribed = false;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       _name = box.get('name', defaultValue: '') as String;
       _nameController.text = _name;
+      _isSubscribed = box.get('isSubscribed', defaultValue: false) as bool;
     });
   }
 
@@ -42,6 +44,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Hive.init(appDocumentDir.path);
     final box = await Hive.openBox('user_data');
     await box.put('name', newName);
+  }
+
+  Future<void> _updateSubscriptionInDatabase(bool isSubscribed) async {
+    final appDocumentDir = await getApplicationDocumentsDirectory();
+    Hive.init(appDocumentDir.path);
+    final box = await Hive.openBox('user_data');
+    await box.put('isSubscribed', isSubscribed);
   }
 
   @override
@@ -82,6 +91,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     return 'Please enter your Name';
                   }
                   return null;
+                },
+              ),
+              SizedBox(height: 10),
+              CheckboxListTile(
+                title: Text('Sort Tasks by Start Time'),
+                value: _isSubscribed,
+                activeColor: Colors.black,
+                onChanged: (value) {
+                  _updateSubscriptionInDatabase(value ?? false);
+                  setState(() {
+                    _isSubscribed = value ?? false;
+                  });
                 },
               ),
               SizedBox(height: 20),

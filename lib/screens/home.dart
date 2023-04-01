@@ -14,6 +14,7 @@ final today = DateTime.now();
 final formattedToday = DateFormat('yyyy-MM-dd').format(_selectedDate);
 final box = Hive.box('user_data');
 final name = box.get('name');
+final isSortable = box.get('isSubscribed');
 
 class Dashboard extends StatefulWidget {
   @override
@@ -137,7 +138,8 @@ class _DashboardState extends State<Dashboard> {
         valueListenable: Hive.box<Task>('tasks').listenable(),
         builder: (context, Box<Task> box, _) {
           List<Task> tasks = box.values.toList();
-          tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
+          if (isSortable)
+            tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
           return Container(
             padding: EdgeInsets.only(bottom: 30),
             child: ListView.builder(
