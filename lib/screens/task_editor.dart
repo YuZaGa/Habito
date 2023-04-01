@@ -26,6 +26,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late String _selectedDate;
   late int _selectedRemind;
   late String _selectedRepeat;
+  late List<String> _completedDates = [];
+
   List<int> remindList = [5, 10, 15, 20, 30];
   List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
 
@@ -48,6 +50,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       _completed = task.isCompleted;
       _selectedRemind = task.remind;
       _selectedRepeat = task.repeat;
+      _completedDates = task.completedDates;
     }
   }
 
@@ -69,9 +72,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       task.date = _selectedDate;
       task.startTime = _startTime;
       task.endTime = _endTime;
-      task.isCompleted = _completed;
       task.remind = _selectedRemind;
       task.repeat = _selectedRepeat;
+      task.completedDates = _completedDates;
 
       task.save();
       Navigator.pop(context);
@@ -166,7 +169,17 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       activeColor: Colors.black,
                       onChanged: (value) {
                         setState(() {
-                          _completed = value!;
+                          if (_completed == false) {
+                            _completed = value!;
+                            //Task.updateStreakCount(_completedDates);
+                            _completedDates.add(DateFormat('yyyy-MM-dd')
+                                .format(DateTime.now())
+                                .toString());
+                          } else if (_completed == true) {
+                            _completed = value!;
+                            _completedDates.removeWhere(
+                                (date) => date == DateTime.now().toString());
+                          }
                         });
                       })
                 ],

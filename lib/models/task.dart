@@ -34,6 +34,12 @@ class Task extends HiveObject {
   @HiveField(9)
   late String repeat;
 
+  @HiveField(10)
+  late List<String> completedDates = [];
+
+  @HiveField(11)
+  late int streakCount = 0;
+
   Task({
     this.id,
     required this.title,
@@ -45,6 +51,7 @@ class Task extends HiveObject {
     required this.color,
     required this.remind,
     required this.repeat,
+    this.streakCount = 0,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -58,6 +65,7 @@ class Task extends HiveObject {
         color: json['Color'],
         remind: json['remind'],
         repeat: json['repeat'],
+        streakCount: json['streakCount'] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -71,5 +79,57 @@ class Task extends HiveObject {
         'Color': color,
         'remind': remind,
         'repeat': repeat,
+        'streakCount': streakCount,
       };
+
+  void updateStreakCount(List<CompletedDate> completedDates) {
+    // Get today's date
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    // Sort the completed dates in ascending order
+    completedDates.sort((a, b) => a.date.compareTo(b.date));
+
+    // Find the index of the last completed date that is before today
+    int lastIndex = -1;
+    for (int i = completedDates.length - 1; i >= 0; i--) {
+      final completedDate = DateTime.parse(completedDates[i].date);
+      if (completedDate.isBefore(today)) {
+        lastIndex = i;
+        break;
+      }
+    }
+
+    // Update the streak count based on the last completed date
+    if (lastIndex == -1) {
+      // No completed dates before today, so streak is broken
+      streakCount = 0;
+    } else {
+      // Calculate the number of consecutive days since the last completed date
+      final lastCompletedDate = DateTime.parse(completedDates[lastIndex].date);
+      final diff = today.difference(lastCompletedDate);
+      final daysSinceLastCompleted = diff.inDays - 1;
+
+      // Update the streak count based on the number of consecutive days
+      if (daysSinceLastCompleted == 0) {
+        // Last completed date is today, so streak continues
+        streakCount++;
+      } else if (daysSinceLastCompleted == 1) {
+        // Last completed date was yesterday, so streak continues
+        streakCount++;
+      } else {
+        // Last completed date was more than one day ago, so streak is broken
+        streakCount = 0;
+      }
+    }
+  }
+}
+
+@HiveType(typeId: 2)
+class CompletedDate extends HiveObject {
+  @HiveField(0)
+  late int taskId;
+
+  @HiveField(1)
+  late String date;
 }
