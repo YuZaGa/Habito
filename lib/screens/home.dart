@@ -3,17 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:test/controllers/notification.dart';
 import 'package:test/screens/task_editor.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/task.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 DateTime _selectedDate = DateTime.now();
 final today = DateTime.now();
 final formattedToday = DateFormat('yyyy-MM-dd').format(_selectedDate);
 final box = Hive.box('user_data');
 final name = box.get('name');
+bool isSortable =
+    box.get('isSubscribed') == null ? false : box.get('isSubscribed');
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin(); //
 
 class Dashboard extends StatefulWidget {
   @override
@@ -21,6 +28,11 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  void initState() {
+    super.initState();
+    NotifyHelper.initialize(flutterLocalNotificationsPlugin);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +75,8 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//AppBar
+
   _appBar() {
     return Container(
       padding: const EdgeInsets.only(top: 10, left: 20, right: 15),
@@ -102,6 +116,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//TaskBar
   _addTaskbar() {
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -127,12 +142,15 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//TaskArea
   _showTask() {
     return Expanded(
       child: ValueListenableBuilder(
         valueListenable: Hive.box<Task>('tasks').listenable(),
         builder: (context, Box<Task> box, _) {
           List<Task> tasks = box.values.toList();
+          if (isSortable)
+            tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
           return Container(
             padding: EdgeInsets.only(bottom: 30),
             child: ListView.builder(
@@ -156,6 +174,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//Function to Display Task Area
   _taskCard(task, index, box) {
     return Container(
       height: 130,
@@ -212,6 +231,11 @@ class _DashboardState extends State<Dashboard> {
             SlidableAction(
               onPressed: (BuildContext context) {
                 _showDeleteConfirmationDialog(context, box, task);
+                /*NotifyHelper().scheduleNotification(
+                    title: "Title",
+                    body: "Long Message",
+                    flutterLocalNotificationsPlugin:
+                        flutterLocalNotificationsPlugin);*/
               },
               backgroundColor: Colors.red.shade400,
               icon: Icons.delete,
@@ -226,6 +250,8 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 Text(
                   task.title.toLowerCase(),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: GoogleFonts.lato(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,

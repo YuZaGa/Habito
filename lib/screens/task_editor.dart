@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:test/screens/home.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:test/screens/widgets/input_field.dart';
-import '../db/db_helper.dart';
 import '../models/task.dart';
 import 'package:get/get.dart';
 
@@ -29,7 +28,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late List<String> _completedDates = [];
 
   List<int> remindList = [5, 10, 15, 20, 30];
-  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
+  List<String> repeatList = ["None", "Daily"];
 
   @override
   void initState() {

@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 part 'task.g.dart';
 
 @HiveType(typeId: 1)
@@ -81,6 +80,16 @@ class Task extends HiveObject {
         'repeat': repeat,
         'streakCount': streakCount,
       };
+
+  void nameUpdated() {
+    Box<Task> sourceBox = Hive.box<Task>('user_data');
+    Box<Task> destinationBox = Hive.box<Task>('tasks');
+
+    for (var i = 0; i < sourceBox.length; i++) {
+      Task task = sourceBox.getAt(i)!;
+      destinationBox.add(task);
+    }
+  }
 
   void updateStreakCount(List<CompletedDate> completedDates) {
     // Get today's date
