@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:test/controllers/notification.dart';
 import 'package:test/screens/task_editor.dart';
 import 'package:test/screens/widgets/button.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/task.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 DateTime _selectedDate = DateTime.now();
 final today = DateTime.now();
@@ -17,12 +19,20 @@ final name = box.get('name');
 bool isSortable =
     box.get('isSubscribed') == null ? false : box.get('isSubscribed');
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin(); //
+
 class Dashboard extends StatefulWidget {
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  void initState() {
+    super.initState();
+    NotifyHelper.initialize(flutterLocalNotificationsPlugin);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,6 +231,11 @@ class _DashboardState extends State<Dashboard> {
             SlidableAction(
               onPressed: (BuildContext context) {
                 _showDeleteConfirmationDialog(context, box, task);
+                /*NotifyHelper().scheduleNotification(
+                    title: "Title",
+                    body: "Long Message",
+                    flutterLocalNotificationsPlugin:
+                        flutterLocalNotificationsPlugin);*/
               },
               backgroundColor: Colors.red.shade400,
               icon: Icons.delete,

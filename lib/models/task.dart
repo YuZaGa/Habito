@@ -91,38 +91,6 @@ class Task extends HiveObject {
     }
   }
 
-  Future<void> scheduleNotification(DateTime startTime, int remind) async {
-    if (remind <= 0) {
-      return;
-    }
-
-    final now = DateTime.now();
-    final scheduledDate = startTime.subtract(Duration(minutes: remind));
-
-    if (scheduledDate.isBefore(now)) {
-      return;
-    }
-
-    final androidDetails = AndroidNotificationDetails(
-      'task_channel_id',
-      'Task Manager',
-      //'Task notifications',
-      priority: Priority.high,
-      importance: Importance.high,
-      ticker: 'Task reminder',
-    );
-
-    final platformDetails = NotificationDetails(android: androidDetails);
-
-    await FlutterLocalNotificationsPlugin().schedule(
-      0,
-      'Task reminder',
-      'It is time to start your task.',
-      scheduledDate,
-      platformDetails,
-    );
-  }
-
   void updateStreakCount(List<CompletedDate> completedDates) {
     // Get today's date
     final now = DateTime.now();
