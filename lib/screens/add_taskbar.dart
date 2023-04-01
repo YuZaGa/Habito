@@ -7,7 +7,6 @@ import 'package:test/screens/widgets/input_field.dart';
 import '../controllers/task_controller.dart';
 import '../db/db_helper.dart';
 import '../models/task.dart';
-import 'package:hive/hive.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -27,7 +26,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   int _selectedRemind = 5;
   List<int> remindList = [5, 10, 15, 20, 30];
   String _selectedRepeat = "None";
-  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
+  List<String> repeatList = ["None", "Daily"];
 
   _appBar() {
     return Container(
