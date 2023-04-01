@@ -137,6 +137,7 @@ class _DashboardState extends State<Dashboard> {
         valueListenable: Hive.box<Task>('tasks').listenable(),
         builder: (context, Box<Task> box, _) {
           List<Task> tasks = box.values.toList();
+          tasks.sort((a, b) => a.startTime.compareTo(b.startTime));
           return Container(
             padding: EdgeInsets.only(bottom: 30),
             child: ListView.builder(

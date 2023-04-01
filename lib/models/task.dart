@@ -1,4 +1,6 @@
 import 'package:hive/hive.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart';
 
 part 'task.g.dart';
 
@@ -81,6 +83,48 @@ class Task extends HiveObject {
         'repeat': repeat,
         'streakCount': streakCount,
       };
+
+  void nameUpdated() {
+    Box<Task> sourceBox = Hive.box<Task>('user_data');
+    Box<Task> destinationBox = Hive.box<Task>('tasks');
+
+    for (var i = 0; i < sourceBox.length; i++) {
+      Task task = sourceBox.getAt(i)!;
+      destinationBox.add(task);
+    }
+  }
+
+  Future<void> scheduleNotification(DateTime startTime, int remind) async {
+    if (remind <= 0) {
+      return;
+    }
+
+    final now = DateTime.now();
+    final scheduledDate = startTime.subtract(Duration(minutes: remind));
+
+    if (scheduledDate.isBefore(now)) {
+      return;
+    }
+
+    final androidDetails = AndroidNotificationDetails(
+      'task_channel_id',
+      'Task Manager',
+      //'Task notifications',
+      priority: Priority.high,
+      importance: Importance.high,
+      ticker: 'Task reminder',
+    );
+
+    final platformDetails = NotificationDetails(android: androidDetails);
+
+    await FlutterLocalNotificationsPlugin().schedule(
+      0,
+      'Task reminder',
+      'It is time to start your task.',
+      scheduledDate,
+      platformDetails,
+    );
+  }
 
   void updateStreakCount(List<CompletedDate> completedDates) {
     // Get today's date
