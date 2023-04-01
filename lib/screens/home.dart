@@ -63,6 +63,8 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//AppBar
+
   _appBar() {
     return Container(
       padding: const EdgeInsets.only(top: 10, left: 20, right: 15),
@@ -102,6 +104,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//TaskBar
   _addTaskbar() {
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
@@ -127,6 +130,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//TaskArea
   _showTask() {
     return Expanded(
       child: ValueListenableBuilder(
@@ -156,6 +160,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+//Function to Display Task Area
   _taskCard(task, index, box) {
     return Container(
       height: 130,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:test/screens/home.dart';
+import 'package:test/screens/widgets/button.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -41,92 +44,94 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await box.put('name', newName);
   }
 
-  Future<void> _showSaveDialog(BuildContext context) async {
-    final formKey = GlobalKey<FormState>();
-    String newName = _name;
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Save Changes'),
-          content: Form(
-            key: formKey,
-            child: TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Name',
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _appBar(),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Enter your name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.red),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.red),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Name';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-              onChanged: (value) {
-                newName = value;
-              },
-            ),
+              SizedBox(height: 20),
+              Center(
+                child: MyButton(
+                    label: "Save",
+                    onTap: () {
+                      final name = _nameController.text;
+                      _updateNameInDatabase(name);
+                      setState(() {
+                        _name = name;
+                      });
+                      Navigator.pushNamed(context, '/home');
+                    }),
+              ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: Text('Save'),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  _updateNameInDatabase(newName);
-                  setState(() {
-                    _name = newName;
-                  });
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        );
-      },
+        ),
+      ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Name',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  _appBar() {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(bottom: 10),
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _name,
-                  style: TextStyle(
-                    fontSize: 18.0,
+                GestureDetector(
+                  onTap: () => Get.toNamed('/'),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: Colors.black,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    _showSaveDialog(context);
-                  },
+                SizedBox(height: 10),
+                Text(
+                  "Settings",
+                  style: HeadingStyle,
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
