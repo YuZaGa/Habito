@@ -27,7 +27,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   int _selectedRemind = 5;
   List<int> remindList = [5, 10, 15, 20, 30];
   String _selectedRepeat = "None";
-  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
+  List<String> repeatList = ["None", "Daily"];
 
   _appBar() {
     return Container(

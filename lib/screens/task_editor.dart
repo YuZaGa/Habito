@@ -29,7 +29,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late List<String> _completedDates = [];
 
   List<int> remindList = [5, 10, 15, 20, 30];
-  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
+  List<String> repeatList = ["None", "Daily"];
 
   @override
   void initState() {
