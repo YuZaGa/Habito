@@ -1,4 +1,6 @@
 //import 'package:timezone/browser.dart';
+import 'dart:math';
+
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -18,7 +20,8 @@ class NotifyHelper {
     var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: null);
   }
 
   static Future showBigTextNoification(
@@ -62,9 +65,8 @@ class NotifyHelper {
     final tz.TZDateTime startTime =
         tz.TZDateTime.from(dateTime, tz.local).subtract(Duration(minutes: 5));
     // Ensure the notification time is not in the past
-
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
+      Random().nextInt(100000),
       task.title,
       task.note,
       _convertTime(hour, minutes),
