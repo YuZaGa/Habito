@@ -232,6 +232,9 @@ class _DashboardState extends State<Dashboard> {
               onPressed: (BuildContext context) {
                 //_showDeleteConfirmationDialog(context, box, task);
                 NotifyHelper().scheduleNotification(
+                    id: task.key,
+                    title: task.title,
+                    body: task.note,
                     flutterLocalNotificationsPlugin:
                         flutterLocalNotificationsPlugin,
                     task: task);

@@ -1,4 +1,5 @@
 //import 'package:timezone/browser.dart';
+import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../models/task.dart';
@@ -38,14 +39,34 @@ class NotifyHelper {
 
   scheduleNotification(
       {var id = 0,
+      required String title,
+      required String body,
+      var payload,
       required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       required Task task}) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    final dateParts = task.date.split('/');
+    final day = int.parse(dateParts[1]);
+    final month = int.parse(dateParts[0]);
+    final year = int.parse(dateParts[2]);
+
+    var _starttime = task.startTime.split(' ')[0] + ':00';
+    final formatteddateTime = DateFormat('h:mm:ss').parse(_starttime);
+    final formatted = DateFormat('HH:mm:ss').format(formatteddateTime);
+    final time = DateTime.parse('1970-01-01 $formatted');
+    final dateTime = tz.TZDateTime(tz.getLocation('Asia/Kolkata'), year, month,
+        day, time.hour, time.minute);
+    final tz.TZDateTime startTime =
+        tz.TZDateTime.from(dateTime, tz.local).subtract(Duration(minutes: 5));
+    // Ensure the notification time is not in the past
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      1,
+      0,
       task.title,
       task.note,
-      tz.TZDateTime.now(tz.getLocation('Asia/Kolkata'))
-          .add(const Duration(seconds: 5)),
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+      //startTime,
       const NotificationDetails(
           android: AndroidNotificationDetails(
               'your channel id', 'your channel name')),
@@ -54,6 +75,51 @@ class NotifyHelper {
           UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
+  /*scheduleNotification(
+      {var id = 0,
+      required String title,
+      required String body,
+      var payload,
+      required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      required Task task}) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    final dateParts = task.date.split('/');
+    final day = int.parse(dateParts[1]);
+    final month = int.parse(dateParts[0]);
+    final year = int.parse(dateParts[2]);
+
+    var _starttime = task.startTime.split(' ')[0] + ':00';
+    final formatteddateTime = DateFormat('h:mm:ss').parse(_starttime);
+    final formatted = DateFormat('HH:mm:ss').format(formatteddateTime);
+    final time = DateTime.parse('1970-01-01 $formatted');
+    final dateTime = tz.TZDateTime(tz.getLocation('Asia/Kolkata'), year, month,
+        day, time.hour, time.minute);
+    print(dateTime);
+    final tz.TZDateTime startTime =
+        tz.TZDateTime.from(dateTime, tz.local).subtract(Duration(minutes: 5));
+    print(startTime);
+    print(tz.TZDateTime.now(tz.getLocation('Asia/Kolkata'))
+        .add(const Duration(seconds: 5)));
+    // Ensure the notification time is not in the past
+    if (startTime.isBefore(now)) {
+      return;
+    }
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      9999,
+      task.title,
+      task.note,
+      tz.TZDateTime.now(tz.getLocation('Asia/Kolkata'))
+          .add(const Duration(seconds: 5)),
+      //startTime,
+      const NotificationDetails(
+          android: AndroidNotificationDetails(
+              'your channel id', 'your channel name')),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }*/
 }
 
   /*
