@@ -173,6 +173,16 @@ class _DashboardState extends State<Dashboard> {
                 }
                 if (task.date ==
                     DateFormat('dd/MM/yyyy').format(_selectedDate)) {
+                  DateTime date =
+                      DateFormat.jm().parse(task.startTime.toString());
+                  var myTime = DateFormat("HH:mm").format(date);
+                  NotifyHelper().scheduleNotification(
+                      hour: int.parse(myTime.toString().split(":")[0]),
+                      minutes: int.parse(myTime.toString().split(":")[1]),
+                      flutterLocalNotificationsPlugin:
+                          flutterLocalNotificationsPlugin,
+                      task: task,
+                      name: name);
                   return _taskCard(task, index, box);
                 } else {
                   return Container();
