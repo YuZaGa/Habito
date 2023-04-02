@@ -230,12 +230,11 @@ class _DashboardState extends State<Dashboard> {
             // delete option
             SlidableAction(
               onPressed: (BuildContext context) {
-                _showDeleteConfirmationDialog(context, box, task);
-                /*NotifyHelper().scheduleNotification(
-                    title: "Title",
-                    body: "Long Message",
+                //_showDeleteConfirmationDialog(context, box, task);
+                NotifyHelper().scheduleNotification(
                     flutterLocalNotificationsPlugin:
-                        flutterLocalNotificationsPlugin);*/
+                        flutterLocalNotificationsPlugin,
+                    task: task);
               },
               backgroundColor: Colors.red.shade400,
               icon: Icons.delete,
