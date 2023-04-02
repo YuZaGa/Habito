@@ -30,7 +30,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
-    NotifyHelper.initialize(flutterLocalNotificationsPlugin);
+    NotifyHelper obj = new NotifyHelper();
+    obj.initialize(flutterLocalNotificationsPlugin);
   }
 
   @override
@@ -157,7 +158,17 @@ class _DashboardState extends State<Dashboard> {
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 Task task = tasks[index];
+                print(task.toJson());
                 if (task.repeat == 'Daily') {
+                  DateTime date =
+                      DateFormat.jm().parse(task.startTime.toString());
+                  var myTime = DateFormat("HH:mm").format(date);
+                  NotifyHelper().scheduleNotification(
+                      hour: int.parse(myTime.toString().split(":")[0]),
+                      minutes: int.parse(myTime.toString().split(":")[1]),
+                      flutterLocalNotificationsPlugin:
+                          flutterLocalNotificationsPlugin,
+                      task: task);
                   return _taskCard(task, index, box);
                 }
                 if (task.date ==
@@ -230,14 +241,14 @@ class _DashboardState extends State<Dashboard> {
             // delete option
             SlidableAction(
               onPressed: (BuildContext context) {
-                //_showDeleteConfirmationDialog(context, box, task);
-                NotifyHelper().scheduleNotification(
+                _showDeleteConfirmationDialog(context, box, task);
+                /*NotifyHelper().scheduleNotification(
                     id: task.key,
                     title: task.title,
                     body: task.note,
                     flutterLocalNotificationsPlugin:
                         flutterLocalNotificationsPlugin,
-                    task: task);
+                    task: task);*/
               },
               backgroundColor: Colors.red.shade400,
               icon: Icons.delete,
