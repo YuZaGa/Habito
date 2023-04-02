@@ -167,7 +167,8 @@ class _DashboardState extends State<Dashboard> {
                       minutes: int.parse(myTime.toString().split(":")[1]),
                       flutterLocalNotificationsPlugin:
                           flutterLocalNotificationsPlugin,
-                      task: task);
+                      task: task,
+                      name: name);
                   return _taskCard(task, index, box);
                 }
                 if (task.date ==
