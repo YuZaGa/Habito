@@ -49,29 +49,14 @@ class NotifyHelper {
       required int minutes,
       required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
       required Task task}) async {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-
-    final dateParts = task.date.split('/');
-    final day = int.parse(dateParts[1]);
-    final month = int.parse(dateParts[0]);
-    final year = int.parse(dateParts[2]);
-
-    var _starttime = task.startTime.split(' ')[0] + ':00';
-    final formatteddateTime = DateFormat('h:mm:ss').parse(_starttime);
-    final formatted = DateFormat('HH:mm:ss').format(formatteddateTime);
-    final time = DateTime.parse('1970-01-01 $formatted');
-    final dateTime = tz.TZDateTime(tz.getLocation('Asia/Kolkata'), year, month,
-        day, time.hour, time.minute);
-    final tz.TZDateTime startTime =
-        tz.TZDateTime.from(dateTime, tz.local).subtract(Duration(minutes: 5));
-    // Ensure the notification time is not in the past
+    final dateTime = null;
+    //final tz.TZDateTime startTime =
+    //   tz.TZDateTime.from(dateTime, tz.local).subtract(Duration(minutes: 5));
     await flutterLocalNotificationsPlugin.zonedSchedule(
       Random().nextInt(100000),
       task.title,
       task.note,
       _convertTime(hour, minutes),
-      //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-      //startTime,
       const NotificationDetails(
           android: AndroidNotificationDetails(
               'your channel id', 'your channel name')),

@@ -158,7 +158,6 @@ class _DashboardState extends State<Dashboard> {
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 Task task = tasks[index];
-                print(task.toJson());
                 if (task.repeat == 'Daily') {
                   DateTime date =
                       DateFormat.jm().parse(task.startTime.toString());
