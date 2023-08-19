@@ -4,9 +4,9 @@ This project aims to provide users with a straightforward habit tracking solutio
 
 
 <div style="display: flex;">
-  <img src="images/1.png" alt="Screenshot 1" style="width: 33%;">
-   <img src="images/3.png" alt="Screenshot 3" style="width: 33%;">
-  <img src="images/2.png" alt="Screenshot 2" style="width: 33%;">
+  <img src="images/1.png" alt="Screenshot 1" style="width: 30%;">
+   <img src="images/3.png" alt="Screenshot 3" style="width: 30%;">
+  <img src="images/2.png" alt="Screenshot 2" style="width: 31%;">
 
 </div>
 
