@@ -1,13 +1,23 @@
-# Habito
+# Habito : Minimal Habit Tracker
 
-This is a minimal habit tracker project built with Flutter, which allows users to track their daily habits and measure their progress over time. The app is designed to be simple, easy to use, and customizable to fit different users' needs.
+This project aims to provide users with a straightforward habit tracking solution built using Flutter. It enables users to effortlessly monitor their daily habits and gauge their progress over time. The app's design prioritizes simplicity, ease of use, and adaptability to cater to various user preferences.
 
-Features
-Add and delete habits
-Track habit progress with a simple and intuitive UI
-Set daily, weekly, or monthly goals for each habit
-View and analyze habit statistics over time
 
-Acknowledgments
-This project was inspired by the need for a simple, minimalistic habit tracker app that could be easily customized and adapted to individual users' needs. Special thanks to the Flutter community for their support and inspiration.
- 
+<div style="display: flex;">
+  <img src="images/1.png" alt="Screenshot 1" style="width: 33%;">
+   <img src="images/3.png" alt="Screenshot 3" style="width: 33%;">
+  <img src="images/2.png" alt="Screenshot 2" style="width: 33%;">
+
+</div>
+
+## Features
+
+- **Add and Delete Habits:** Effortlessly include new habits or remove existing ones as needed.
+- **Intuitive Progress Tracking:** User-friendly interface to monitor the progress of each habit.
+- **Flexible Goal Setting:** Set goals for habits on a daily, weekly, or monthly basis, accommodating diverse preferences.
+- **Comprehensive Statistics:** Access and analyze habit statistics over different time periods.
+
+## Acknowledgments
+
+This project finds its roots in the desire for an uncluttered, minimalist habit tracking app that can be tailored to individual users. Special recognition goes out to the Flutter community for their valuable support and sources of inspiration.
+
